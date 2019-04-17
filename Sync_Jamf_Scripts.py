@@ -4,7 +4,7 @@ import json
 import os
 import requests
 
-import config
+import jamf_info
 
 
 class JamfSync(object):
@@ -54,8 +54,8 @@ class JamfSync(object):
         :param script_name: This is a string returned by script_content()
         :param script_content: This is a string returned by script_content()
         """
-        if not os.path.exists(config.script_dir):
-            os.makedirs(config.script_dir)
+        if not os.path.exists(jamf_info.script_dir):
+            os.makedirs(jamf_info.script_dir)
         first_line = script_content.split('\n', 1)[0]
         if 'bash' in first_line:
             script_name = script_name + '.sh'
@@ -68,13 +68,13 @@ class JamfSync(object):
 
 def main():
     """Write all scripts from Jamf to script_dir folder."""
-    jss_sync = JamfSync(config.script_api_url, config.script_dir,
-                        config.api_user, config.api_pw)
+    jss_sync = JamfSync(jamf_info.script_api_url, jamf_info.script_dir,
+                        jamf_info.api_user, jamf_info.api_pw)
 
-    jss_sync.get_script_catalog(config.resource_url + 'scripts')
+    jss_sync.get_script_catalog(jamf_info.resource_url + 'scripts')
     for script in jss_sync.script_catalog:
         id = str(script['id'])
-        script_url = config.url + id
+        script_url = jamf_info.url + id
         script_name, script_content = jss_sync.get_script_info(script_url)
         jss_sync.write_file(script_name, script_content)
 
